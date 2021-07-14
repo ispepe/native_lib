@@ -5,68 +5,23 @@ import 'dart:ffi' as ffi;
 import 'dart:io';
 import 'structs.dart';
 
-export 'structs.dart';
-
 ffi.DynamicLibrary nativeLib = Platform.isAndroid
-    ? ffi.DynamicLibrary.open("libgsgStitch.so")
+    ? ffi.DynamicLibrary.open("libnative-lib.so")
     : ffi.DynamicLibrary.process();
 
-class NativeLibrary {
+class NativeLibraryExt {
   /// Holds the symbol lookup function.
   final ffi.Pointer<T> Function<T extends ffi.NativeType>(String symbolName)
       _lookup;
 
   /// The symbols are looked up in [dynamicLibrary].
-  NativeLibrary() : _lookup = nativeLib.lookup;
+  NativeLibraryExt() : _lookup = nativeLib.lookup;
 
   /// The symbols are looked up with [lookup].
-  NativeLibrary.fromLookup(
+  NativeLibraryExt.fromLookup(
       ffi.Pointer<T> Function<T extends ffi.NativeType>(String symbolName)
           lookup)
       : _lookup = lookup;
-
-  int loadAllMap(
-    ffi.Pointer<ffi.Int8> pPath,
-    ffi.Pointer<MappingInfo> maps,
-    ffi.Pointer<ffi.Int32> pSpherialRadius,
-  ) {
-    return _loadAllMap(
-      pPath,
-      maps,
-      pSpherialRadius,
-    );
-  }
-
-  late final _loadAllMap_ptr =
-      _lookup<ffi.NativeFunction<_c_loadAllMap>>('loadAllMap');
-  late final _dart_loadAllMap _loadAllMap =
-      _loadAllMap_ptr.asFunction<_dart_loadAllMap>();
-
-  void releaseMaps(
-    ffi.Pointer<MappingInfo> maps,
-  ) {
-    return _releaseMaps(
-      maps,
-    );
-  }
-
-  late final _releaseMaps_ptr =
-      _lookup<ffi.NativeFunction<_c_releaseMaps>>('releaseMaps');
-  late final _dart_releaseMaps _releaseMaps =
-      _releaseMaps_ptr.asFunction<_dart_releaseMaps>();
-
-  void releaseImageInfo(
-    ffi.Pointer<ImageInfo> pImage,
-  ) {
-    return _releaseImageInfo(
-      pImage,
-    );
-  }
-
-  late final _releaseImageInfo_ptr =
-      _lookup<ffi.NativeFunction<_c_releaseImageInfo>>('releaseImageInfo');
-  late final _dart_releaseImageInfo _releaseImageInfo =
-      _releaseImageInfo_ptr.asFunction<_dart_releaseImageInfo>();
 
   int loadImageData(
     ffi.Pointer<ffi.Int8> pFileName,
@@ -104,68 +59,23 @@ class NativeLibrary {
   late final _dart_makeImageInfo _makeImageInfo =
       _makeImageInfo_ptr.asFunction<_dart_makeImageInfo>();
 
-  int HDRFuse(
-    ffi.Pointer<ImageInfo> images,
-    int iImgNum,
-    ffi.Pointer<HDRParams> pPars,
-    ffi.Pointer<ImageInfo> pResult,
+  void releaseImageData(
+    ffi.Pointer<ffi.Pointer<ffi.Uint8>> ppData,
   ) {
-    return _HDRFuse(
-      images,
-      iImgNum,
-      pPars,
-      pResult,
+    return _releaseImageData(
+      ppData,
     );
   }
 
-  late final _HDRFuse_ptr = _lookup<ffi.NativeFunction<_c_HDRFuse>>('HDRFuse');
-  late final _dart_HDRFuse _HDRFuse = _HDRFuse_ptr.asFunction<_dart_HDRFuse>();
-
-  int fuseFinal(
-    ffi.Pointer<FeImageContext> imgContext,
-    ffi.Pointer<MappingInfo> maps,
-    ffi.Pointer<ImageInfo> pResult,
-  ) {
-    return _fuseFinal(
-      imgContext,
-      maps,
-      pResult,
-    );
-  }
-
-  late final _fuseFinal_ptr =
-      _lookup<ffi.NativeFunction<_c_fuseFinal>>('fuseFinal');
-  late final _dart_fuseFinal _fuseFinal =
-      _fuseFinal_ptr.asFunction<_dart_fuseFinal>();
+  late final _releaseImageData_ptr =
+      _lookup<ffi.NativeFunction<_c_releaseImageData>>('releaseImageData');
+  late final _dart_releaseImageData _releaseImageData =
+      _releaseImageData_ptr.asFunction<_dart_releaseImageData>();
 }
 
-typedef _c_loadAllMap = ffi.Int32 Function(
-  ffi.Pointer<ffi.Int8> pPath,
-  ffi.Pointer<MappingInfo> maps,
-  ffi.Pointer<ffi.Int32> pSpherialRadius,
-);
+const int true_1 = 1;
 
-typedef _dart_loadAllMap = int Function(
-  ffi.Pointer<ffi.Int8> pPath,
-  ffi.Pointer<MappingInfo> maps,
-  ffi.Pointer<ffi.Int32> pSpherialRadius,
-);
-
-typedef _c_releaseMaps = ffi.Void Function(
-  ffi.Pointer<MappingInfo> maps,
-);
-
-typedef _dart_releaseMaps = void Function(
-  ffi.Pointer<MappingInfo> maps,
-);
-
-typedef _c_releaseImageInfo = ffi.Void Function(
-  ffi.Pointer<ImageInfo> pImage,
-);
-
-typedef _dart_releaseImageInfo = void Function(
-  ffi.Pointer<ImageInfo> pImage,
-);
+const int false_1 = -1;
 
 typedef _c_loadImageData = ffi.Int32 Function(
   ffi.Pointer<ffi.Int8> pFileName,
@@ -193,28 +103,10 @@ typedef _dart_makeImageInfo = ImageInfo Function(
   ffi.Pointer<ffi.Uint8> pImageData,
 );
 
-typedef _c_HDRFuse = ffi.Int32 Function(
-  ffi.Pointer<ImageInfo> images,
-  ffi.Int32 iImgNum,
-  ffi.Pointer<HDRParams> pPars,
-  ffi.Pointer<ImageInfo> pResult,
+typedef _c_releaseImageData = ffi.Void Function(
+  ffi.Pointer<ffi.Pointer<ffi.Uint8>> ppData,
 );
 
-typedef _dart_HDRFuse = int Function(
-  ffi.Pointer<ImageInfo> images,
-  int iImgNum,
-  ffi.Pointer<HDRParams> pPars,
-  ffi.Pointer<ImageInfo> pResult,
-);
-
-typedef _c_fuseFinal = ffi.Int32 Function(
-  ffi.Pointer<FeImageContext> imgContext,
-  ffi.Pointer<MappingInfo> maps,
-  ffi.Pointer<ImageInfo> pResult,
-);
-
-typedef _dart_fuseFinal = int Function(
-  ffi.Pointer<FeImageContext> imgContext,
-  ffi.Pointer<MappingInfo> maps,
-  ffi.Pointer<ImageInfo> pResult,
+typedef _dart_releaseImageData = void Function(
+  ffi.Pointer<ffi.Pointer<ffi.Uint8>> ppData,
 );

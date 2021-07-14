@@ -4,14 +4,13 @@
 // directory. You can also find a detailed instruction on how to add platforms in the `pubspec.yaml` at https://flutter.dev/docs/development/packages-and-plugins/developing-packages#plugin-platforms.
 
 import 'dart:async';
-import 'dart:ffi';
 import 'dart:io';
+import 'dart:ffi' as ffi;
+
+import 'package:native_lib/third_party/native_library.dart';
+import 'package:native_lib/third_party/stitch_library.dart';
 
 import 'package:flutter/services.dart';
-
-DynamicLibrary nativeLib = Platform.isAndroid
-    ? DynamicLibrary.open("libnative_add.so")
-    : DynamicLibrary.process();
 
 class NativeLib {
   static const MethodChannel _channel = const MethodChannel('native_lib');
@@ -26,14 +25,16 @@ class NativeLib {
     if (!Platform.isAndroid) return;
 
     try {
-      nativeLib = DynamicLibrary.open('libnative-lib.so');
+      gsgStitchLib = ffi.DynamicLibrary.open('libgsgStitch.so');
+      nativeLib = ffi.DynamicLibrary.open('libnative-lib.so');
     } on ArgumentError {
       // Ok, the regular approach failed. Try to open sqlite3 in Java, which seems
       // to fix the problem.
       await _channel.invokeMethod('doesnt_matter');
 
       // Try again. If it still fails we're out of luck.
-      nativeLib = DynamicLibrary.open('libnative-lib.so');
+      gsgStitchLib = ffi.DynamicLibrary.open('libgsgStitch.so');
+      nativeLib = ffi.DynamicLibrary.open('libnative-lib.so');
     }
   }
 }
