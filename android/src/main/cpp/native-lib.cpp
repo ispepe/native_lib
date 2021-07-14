@@ -118,10 +118,16 @@ fuse(const char *pFileName1, const char *pFileName2, const char *pMapPath, const
     }
 
 //    cv::waitKey();
+    if (reValue == -2) {
+        releaseMaps(maps);
+        releaseImageInfo(&imgCxt[0].image);
+        releaseImageInfo(&imgCxt[1].image);
+    } else if (reValue == 1) {
+        releaseMaps(maps);
+        releaseImageInfo(&imgCxt[0].image);
+        releaseImageInfo(&imgCxt[1].image);
+        releaseImageInfo(&fuseResult);
+    }
 
-    releaseMaps(maps);
-    releaseImageInfo(&imgCxt[0].image);
-    releaseImageInfo(&imgCxt[1].image);
-    releaseImageInfo(&fuseResult);
     return reValue;
 }
