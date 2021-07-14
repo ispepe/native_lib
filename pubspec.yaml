@@ -11,9 +11,12 @@ dependencies:
   flutter:
     sdk: flutter
 
+  ffi: ^1.1.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
+#  ffigen: ^3.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -26,14 +29,13 @@ flutter:
   # adding or updating assets for this project.
   plugin:
     platforms:
-    # This plugin project was generated without specifying any
-    # platforms with the `--platform` argument. If you see the `some_platform` map below, remove it and
-    # then add platforms following the instruction here:
-    # https://flutter.dev/docs/development/packages-and-plugins/developing-packages#plugin-platforms
-    # -------------------
-      some_platform:
-        pluginClass: somePluginClass
-    # -------------------
+      android:
+        package: com.example.native_lib
+        pluginClass: NativeLibPlugin
+      ios:
+        pluginClass: NativeLibPlugin
+      macos:
+        pluginClass: NativeLibPlugin
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:
@@ -65,3 +67,12 @@ flutter:
   #
   # For details regarding fonts in packages, see
   # https://flutter.dev/custom-fonts/#from-packages
+
+# 此处构建依赖文件
+#ffigen:
+#  output: 'lib/third_party/gsg_stitch.dart'
+#  headers:
+#    entry-points:
+#      - 'lib/include/common.h'
+#      - 'lib/include/HDRFuse.h'
+#      - 'lib/include/twoFisheyeBlend.h'
