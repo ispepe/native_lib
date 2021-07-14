@@ -9,16 +9,16 @@ ffi.DynamicLibrary nativeLib = Platform.isAndroid
     ? ffi.DynamicLibrary.open("libnative-lib.so")
     : ffi.DynamicLibrary.process();
 
-class NativeLibraryExt {
+class NativeLibrary {
   /// Holds the symbol lookup function.
   final ffi.Pointer<T> Function<T extends ffi.NativeType>(String symbolName)
       _lookup;
 
   /// The symbols are looked up in [dynamicLibrary].
-  NativeLibraryExt() : _lookup = nativeLib.lookup;
+  NativeLibrary() : _lookup = nativeLib.lookup;
 
   /// The symbols are looked up with [lookup].
-  NativeLibraryExt.fromLookup(
+  NativeLibrary.fromLookup(
       ffi.Pointer<T> Function<T extends ffi.NativeType>(String symbolName)
           lookup)
       : _lookup = lookup;
@@ -71,11 +71,19 @@ class NativeLibraryExt {
       _lookup<ffi.NativeFunction<_c_releaseImageData>>('releaseImageData');
   late final _dart_releaseImageData _releaseImageData =
       _releaseImageData_ptr.asFunction<_dart_releaseImageData>();
+
+  int fuse(
+    ffi.Pointer<ffi.Int8> pFileName1,
+    ffi.Pointer<ffi.Int8> pFileName2,
+    ffi.Pointer<ffi.Int8> pMapPath,
+    ffi.Pointer<ffi.Int8> pSavePath,
+  ) {
+    return _fuse(pFileName1, pFileName2, pMapPath, pSavePath);
+  }
+
+  late final _fuse_ptr = _lookup<ffi.NativeFunction<_c_fuse>>('fuse');
+  late final _dart_fuse _fuse = _fuse_ptr.asFunction<_dart_fuse>();
 }
-
-const int true_1 = 1;
-
-const int false_1 = -1;
 
 typedef _c_loadImageData = ffi.Int32 Function(
   ffi.Pointer<ffi.Int8> pFileName,
@@ -109,4 +117,18 @@ typedef _c_releaseImageData = ffi.Void Function(
 
 typedef _dart_releaseImageData = void Function(
   ffi.Pointer<ffi.Pointer<ffi.Uint8>> ppData,
+);
+
+typedef _c_fuse = ffi.Int32 Function(
+  ffi.Pointer<ffi.Int8> pFileName1,
+  ffi.Pointer<ffi.Int8> pFileName2,
+  ffi.Pointer<ffi.Int8> pMapPath,
+  ffi.Pointer<ffi.Int8> pSavePath,
+);
+
+typedef _dart_fuse = int Function(
+  ffi.Pointer<ffi.Int8> pFileName1,
+  ffi.Pointer<ffi.Int8> pFileName2,
+  ffi.Pointer<ffi.Int8> pMapPath,
+  ffi.Pointer<ffi.Int8> pSavePath,
 );

@@ -5,22 +5,20 @@ import 'dart:ffi' as ffi;
 import 'dart:io';
 import 'structs.dart';
 
-export 'structs.dart';
-
 ffi.DynamicLibrary gsgStitchLib = Platform.isAndroid
     ? ffi.DynamicLibrary.open("libgsgStitch.so")
     : ffi.DynamicLibrary.process();
 
-class NativeLibrary {
+class StitchLibrary {
   /// Holds the symbol lookup function.
   final ffi.Pointer<T> Function<T extends ffi.NativeType>(String symbolName)
       _lookup;
 
   /// The symbols are looked up in [dynamicLibrary].
-  NativeLibrary() : _lookup = gsgStitchLib.lookup;
+  StitchLibrary() : _lookup = gsgStitchLib.lookup;
 
   /// The symbols are looked up with [lookup].
-  NativeLibrary.fromLookup(
+  StitchLibrary.fromLookup(
       ffi.Pointer<T> Function<T extends ffi.NativeType>(String symbolName)
           lookup)
       : _lookup = lookup;

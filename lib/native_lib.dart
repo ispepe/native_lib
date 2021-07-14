@@ -10,6 +10,9 @@ import 'dart:ffi' as ffi;
 import 'package:native_lib/third_party/native_library.dart';
 import 'package:native_lib/third_party/stitch_library.dart';
 
+export 'package:native_lib/third_party/native_library.dart';
+export 'package:native_lib/third_party/stitch_library.dart';
+export 'package:native_lib/third_party/structs.dart';
 import 'package:flutter/services.dart';
 
 class NativeLib {
@@ -19,6 +22,8 @@ class NativeLib {
     final String? version = await _channel.invokeMethod('getPlatformVersion');
     return version;
   }
+
+  /// TODO: 2021/7/14 待处理 编写调用接口（临时处理）
 
   /// 碰见异常了，再打开一次，兼容安卓旧版本
   Future<void> applyWorkaroundToOpenSqlite3OnOldAndroidVersions() async {
