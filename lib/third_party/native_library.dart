@@ -76,9 +76,10 @@ class NativeLibrary {
     ffi.Pointer<ffi.Int8> pFileName1,
     ffi.Pointer<ffi.Int8> pFileName2,
     ffi.Pointer<ffi.Int8> pMapPath,
+    ffi.Pointer<ffi.Int8> pVignetPath,
     ffi.Pointer<ffi.Int8> pSavePath,
   ) {
-    return _fuse(pFileName1, pFileName2, pMapPath, pSavePath);
+    return _fuse(pFileName1, pFileName2, pMapPath, pVignetPath, pSavePath);
   }
 
   late final _fuse_ptr = _lookup<ffi.NativeFunction<_c_fuse>>('fuse');
@@ -123,6 +124,7 @@ typedef _c_fuse = ffi.Int32 Function(
   ffi.Pointer<ffi.Int8> pFileName1,
   ffi.Pointer<ffi.Int8> pFileName2,
   ffi.Pointer<ffi.Int8> pMapPath,
+  ffi.Pointer<ffi.Int8> pVignetPath,
   ffi.Pointer<ffi.Int8> pSavePath,
 );
 
@@ -130,5 +132,6 @@ typedef _dart_fuse = int Function(
   ffi.Pointer<ffi.Int8> pFileName1,
   ffi.Pointer<ffi.Int8> pFileName2,
   ffi.Pointer<ffi.Int8> pMapPath,
+  ffi.Pointer<ffi.Int8> pVignetPath,
   ffi.Pointer<ffi.Int8> pSavePath,
 );

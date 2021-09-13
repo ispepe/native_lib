@@ -62,7 +62,7 @@ void releaseImageInfo(IMAGEINFO * pImage);
 int loadImageData(const char *pFileName, int iImgW, int iImgH, unsigned char **ppData);
 IMAGEINFO makeImageInfo(int imageW, int imageH, unsigned char *pImageData);
 void releaseImageData(unsigned char **ppData);
-void fuse(const char *pFileName1, const char *pFileName2, const char *pMapPath, const char *pSavePath);
+int fuse(const char *pFileName1, const char *pFileName2, const char *pMapPath, const char *pVignetPath, const char *pSavePath);
 #ifdef __cplusplus
 }
 #endif

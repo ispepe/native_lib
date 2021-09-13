@@ -1,4 +1,5 @@
 #include "common.h"
+#include "devignet.h"
 #include "opencv2/opencv.hpp"
 #include "twoFisheyeBlend.h"
 
@@ -87,11 +88,13 @@ void Mat2imgInfo(cv::Mat dst, IMAGEINFO *pImage) {
 
 extern "C" __attribute__((visibility("default"))) __attribute__((used))
 int
-fuse(const char *pFileName1, const char *pFileName2, const char *pMapPath, const char *pSavePath) {
+fuse(const char *pFileName1, const char *pFileName2, const char *pMapPath, const char *pVignetPath,
+     const char *pSavePath) {
     cv::Mat srcImgs[2], result;
     int iSpherialRadius;
     FEIMAGECONTEXT imgCxt[2];
     MAPPINGINFO maps[4];
+    VIGNETINFO vigPara[2];
     IMAGEINFO fuseResult;
     int i;
     srcImgs[0] = cv::imread(cv::String(pFileName1));
@@ -100,16 +103,23 @@ fuse(const char *pFileName1, const char *pFileName2, const char *pMapPath, const
     if (loadAllMap(pMapPath, maps, &iSpherialRadius)) {
         printf("load map files failed.\n");
         reValue = -1;
+    } else if (loadVignetPara(pVignetPath, vigPara)) {
+        printf("load map files failed.\n");
+        reValue = -2;
     } else {
         for (i = 0; i < 2; i++) {
             imgCxt[i].iSpherialRadius = iSpherialRadius;
             imgCxt[i].iDstHeight = iSpherialRadius * 2 + 1;
             Mat2imgInfo(srcImgs[i], &imgCxt[i].image);
+#ifdef VIGNET_BGR
+            deVignet_bgr(&imgCxt[i].image, &vigPara[i]);
+#else
+            deVignet_yuv(&imgCxt[i].image, &vigPara[i]);
+#endif
         }
-
         if (fuseFinal(imgCxt, maps, &fuseResult)) {
             printf("fuse failed.\n");
-            reValue = -2;
+            reValue = -3;
         } else {
             imgInfo2Mat(&fuseResult, result);
             imwrite(cv::String(pSavePath), result);
@@ -119,6 +129,8 @@ fuse(const char *pFileName1, const char *pFileName2, const char *pMapPath, const
 
 //    cv::waitKey();
     if (reValue == -2) {
+        releaseMaps(maps);
+    } else if (reValue == -3) {
         releaseMaps(maps);
         releaseImageInfo(&imgCxt[0].image);
         releaseImageInfo(&imgCxt[1].image);
